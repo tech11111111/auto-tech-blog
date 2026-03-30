@@ -1,0 +1,41 @@
+{
+  "identity": {
+    "blog_name": "TechPulse AI",
+    "voice": "confident, witty, expert",
+    "level": 1,
+    "total_posts": 0,
+    "total_views": 0,
+    "total_likes": 0
+  },
+  "writing_rules": {
+    "best_intro_style": "start with a shocking fact or question",
+    "best_length": "medium",
+    "best_word_count": 1200,
+    "avoid_phrases": ["In conclusion", "It is worth noting", "Delve into", "Furthermore"],
+    "power_words": ["secretly", "finally", "exposed", "truth", "revealed"],
+    "best_structure": "hook + problem + solution + examples + FAQ + CTA"
+  },
+  "title_formulas": {
+    "best_performing": "Why X Is Quietly Changing Y in 2026",
+    "click_patterns": ["Why", "How", "What", "Secret", "Finally", "Truth"],
+    "avoid": ["Top 10", "Ultimate Guide", "Best of"],
+    "must_include_year": true
+  },
+  "topic_intelligence": {
+    "hot_categories": ["AI", "cybersecurity", "software", "hardware"],
+    "cold_categories": [],
+    "competitor_gaps": [],
+    "trending_keywords": []
+  },
+  "growth_strategy": {
+    "current_level": "beginner",
+    "weekly_view_goal": 500,
+    "monthly_view_goal": 2000,
+    "current_weekly_views": 0,
+    "next_milestone": "First 100 views",
+    "growth_tactics": []
+  },
+  "daily_lessons": [],
+  "weekly_analysis": [],
+  "last_updated": null
+}
