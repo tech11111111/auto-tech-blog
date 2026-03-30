@@ -1,0 +1,38 @@
+name: 馃 AutoBlog Daily Post
+
+on:
+  schedule:
+    - cron: '0 9 * * *'  # Every day at 9:00 AM UTC
+  workflow_dispatch:       # Manual trigger from GitHub Actions tab
+
+jobs:
+  post-blog:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 馃摜 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 馃悕 Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 馃摝 Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: 馃殌 Run AutoBlog Pipeline
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          DEVTO_API_KEY:  ${{ secrets.DEVTO_API_KEY }}
+        run: python main.py
+
+      - name: 馃捑 Save memory.json back to repo
+        run: |
+          git config --global user.name "AutoBlog Bot"
+          git config --global user.email "autoblog@bot.com"
+          git add memory.json || true
+          git diff --staged --quiet || git commit -m "馃搳 Update memory - $(date +'%Y-%m-%d')"
+          git push || true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
