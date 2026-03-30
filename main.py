@@ -11,7 +11,7 @@ GEMINI_API_KEY = os.environ["GEMINI_API_KEY"]
 DEVTO_API_KEY  = os.environ["DEVTO_API_KEY"]
 
 # ── GEMINI ENDPOINTS ──────────────────────────────────────────────────────────
-GEMINI_TEXT_URL  = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={GEMINI_API_KEY}"
+GEMINI_TEXT_URL  = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={GEMINI_API_KEY}"
 GEMINI_IMAGE_URL = f"https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key={GEMINI_API_KEY}"
 
 # ── AFFILIATE LINKS (add your own links here) ─────────────────────────────────
@@ -532,4 +532,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-      
