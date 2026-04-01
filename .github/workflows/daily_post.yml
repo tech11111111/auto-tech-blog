@@ -1,12 +1,12 @@
-name: 馃帗 AutoBlog Daily Learn
+name: 馃 AutoBlog Daily Post
 
 on:
   schedule:
-    - cron: '0 18 * * *'  # Every day at 6:00 PM UTC
+    - cron: '0 9 * * *'   # Every day at 9:00 AM UTC (2:30 PM IST)
   workflow_dispatch:        # Manual trigger
 
 jobs:
-  learn-and-evolve:
+  post-blog:
     runs-on: ubuntu-latest
 
     steps:
@@ -21,18 +21,24 @@ jobs:
       - name: 馃摝 Install dependencies
         run: pip install -r requirements.txt
 
-      - name: 馃帗 Run Daily Learner
+      - name: 馃攳 Run Keyword Research First
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           DEVTO_API_KEY:  ${{ secrets.DEVTO_API_KEY }}
-        run: python learner.py
+        run: python keyword_researcher.py
 
-      - name: 馃捑 Save updated brain.json to repo
+      - name: 馃殌 Run AutoBlog Pipeline
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          DEVTO_API_KEY:  ${{ secrets.DEVTO_API_KEY }}
+        run: python main.py
+
+      - name: 馃捑 Save files back to repo
         run: |
-          git config --global user.name "AutoBlog Brain"
+          git config --global user.name "AutoBlog Bot"
           git config --global user.email "autoblog@bot.com"
-          git add brain.json memory.json || true
-          git diff --staged --quiet || git commit -m "馃 Brain evolved - $(date +'%Y-%m-%d')"
+          git add memory.json brain.json || true
+          git diff --staged --quiet || git commit -m "馃摑 New post + keywords $(date +'%Y-%m-%d')"
           git push || true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
