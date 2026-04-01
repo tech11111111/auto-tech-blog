@@ -1,90 +1,38 @@
+name: 馃帗 AutoBlog Daily Learn
+
 on:
   schedule:
-    - cron: '0 9 * * *'
-  workflow_dispatch:
+    - cron: '0 18 * * *'  # Every day at 6:00 PM UTC
+  workflow_dispatch:        # Manual trigger
 
 jobs:
-  daily-video:
+  learn-and-evolve:
     runs-on: ubuntu-latest
-    timeout-minutes: 90
 
     steps:
-      - name: 馃搨 Checkout repo
+      - name: 馃摜 Checkout repository
         uses: actions/checkout@v4
 
-      - name: 馃悕 Setup Python
+      - name: 馃悕 Set up Python 3.11
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      - name: 馃敡 Install ffmpeg
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y ffmpeg imagemagick fonts-liberation fonts-dejavu
-
-      - name: 馃摝 Install packages
+      - name: 馃摝 Install dependencies
         run: pip install -r requirements.txt
 
-      - name: 馃搧 Create folders
+      - name: 馃帗 Run Daily Learner
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          DEVTO_API_KEY:  ${{ secrets.DEVTO_API_KEY }}
+        run: python learner.py
+
+      - name: 馃捑 Save updated brain.json to repo
         run: |
-          mkdir -p data voice/output video/footage video/output video/assets
-          [ -f data/channel_memory.json ] || echo '{"channel":{"total_videos_posted":0,"average_views_per_video":0,"best_ever_views":0,"best_ever_title":""},"learning":{"best_keywords":["secret","dark","hidden","untold","mystery","forgotten","brutal"],"worst_keywords":[],"best_topics":[],"worst_topics":[],"winning_formulas":[],"mistakes_to_avoid":[],"human_style_notes":[]},"performance_log":[]}' > data/channel_memory.json
-          [ -f data/used_topics.json ] || echo '[]' > data/used_topics.json
-
-      - name: 馃攳 STEP 1 鈥� Find viral topic
+          git config --global user.name "AutoBlog Brain"
+          git config --global user.email "autoblog@bot.com"
+          git add brain.json memory.json || true
+          git diff --staged --quiet || git commit -m "馃 Brain evolved - $(date +'%Y-%m-%d')"
+          git push || true
         env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
-        run: python research/topic_finder.py
-
-      - name: 鉁嶏笍 STEP 2 鈥� Write script
-        env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
-        run: python scripts/script_writer.py
-
-      - name: 馃帣锔� STEP 3 鈥� Generate voice
-        run: python voice/generate_voice.py
-
-      - name: 馃幀 STEP 4 鈥� Download footage
-        env:
-          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
-          BYTEZ_API_KEY: ${{ secrets.BYTEZ_API_KEY }}
-        run: python video/get_footage.py
-
-      - name: 馃帴 STEP 5 鈥� Build long video
-        run: python video/build_long_video.py
-
-      - name: 鉁傦笍 STEP 6 鈥� Build 3 Shorts
-        run: python video/build_shorts.py
-
-      - name: 馃柤锔� STEP 7 鈥� Make thumbnail
-        run: python thumbnails/make_thumbnail.py
-
-      - name: 馃攽 STEP 8 鈥� Generate SEO
-        env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        run: python seo/seo_generator.py
-
-      - name: 馃摛 STEP 9 鈥� Upload to YouTube
-        env:
-          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
-          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
-          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
-        run: python upload/youtube_upload.py
-
-      - name: 馃 STEP 10 鈥� Self learn
-        env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
-          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
-          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
-        run: python learning/self_improve.py
-
-      - name: 馃捑 Save brain to repo
-        run: |
-          git config user.name "History Bot"
-          git config user.email "bot@historybot.ai"
-          git add data/
-          git diff --staged --quiet || git commit -m "馃 Brain update $(date +%Y-%m-%d)"
-          git push
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
