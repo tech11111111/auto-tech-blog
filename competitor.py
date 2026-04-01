@@ -161,3 +161,4 @@ def get_competitor_intelligence(brain):
     print(f"  ✅ Trending tags: {trending_tag_names[:5]}")
 
     return brain
+    
