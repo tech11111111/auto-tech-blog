@@ -1,12 +1,12 @@
-name: 馃帗 AutoBlog Daily Learn
+name: 馃挰 AutoBlog Daily Engage
 
 on:
   schedule:
-    - cron: '0 18 * * *'  # 6PM UTC = 11:30PM IST
+    - cron: '0 11 * * *'  # 11AM UTC = 4:30PM IST
   workflow_dispatch:
 
 jobs:
-  learn-and-evolve:
+  engage:
     runs-on: ubuntu-latest
 
     steps:
@@ -21,18 +21,19 @@ jobs:
       - name: 馃摝 Install dependencies
         run: pip install -r requirements.txt
 
-      - name: 馃帗 Run Learner
+      - name: 馃挰 Run Engagement Bot
         env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          DEVTO_API_KEY:  ${{ secrets.DEVTO_API_KEY }}
-        run: python learner.py
+          GEMINI_API_KEY:   ${{ secrets.GEMINI_API_KEY }}
+          DEVTO_API_KEY:    ${{ secrets.DEVTO_API_KEY }}
+          HASHNODE_API_KEY: ${{ secrets.HASHNODE_API_KEY }}
+        run: python engagement_bot.py
 
-      - name: 馃捑 Save brain
+      - name: 馃捑 Save engagement data
         run: |
-          git config --global user.name "AutoBlog Brain"
+          git config --global user.name "AutoBlog Engage"
           git config --global user.email "autoblog@bot.com"
-          git add brain.json memory.json || true
-          git diff --staged --quiet || git commit -m "馃 Brain evolved $(date +'%Y-%m-%d')"
+          git add engagement.json brain.json || true
+          git diff --staged --quiet || git commit -m "馃挰 Engagement update $(date +'%Y-%m-%d')"
           git push || true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
