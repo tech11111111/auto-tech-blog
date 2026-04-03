@@ -1,1 +1,38 @@
+name: 馃帗 AutoBlog Daily Learn
 
+on:
+  schedule:
+    - cron: '0 18 * * *'  # 6PM UTC = 11:30PM IST
+  workflow_dispatch:
+
+jobs:
+  learn-and-evolve:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 馃摜 Checkout
+        uses: actions/checkout@v4
+
+      - name: 馃悕 Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 馃摝 Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: 馃帗 Run Learner
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          DEVTO_API_KEY:  ${{ secrets.DEVTO_API_KEY }}
+        run: python learner.py
+
+      - name: 馃捑 Save brain
+        run: |
+          git config --global user.name "AutoBlog Brain"
+          git config --global user.email "autoblog@bot.com"
+          git add brain.json memory.json || true
+          git diff --staged --quiet || git commit -m "馃 Brain evolved $(date +'%Y-%m-%d')"
+          git push || true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
