@@ -2,18 +2,20 @@ name: 馃 AutoBlog Daily Post
 
 on:
   schedule:
-    - cron: '0 9 * * *'   # Every day at 9:00 AM UTC (2:30 PM IST)
-  workflow_dispatch:        # Manual trigger
+    - cron: '0 8 * * *'   # 8AM UTC = scan
+    - cron: '30 8 * * *'  # 8:30AM UTC = viral detect
+    - cron: '0 9 * * *'   # 9AM UTC = post (2:30PM IST)
+  workflow_dispatch:
 
 jobs:
-  post-blog:
+  scan-and-post:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 馃摜 Checkout repository
+      - name: 馃摜 Checkout
         uses: actions/checkout@v4
 
-      - name: 馃悕 Set up Python 3.11
+      - name: 馃悕 Python 3.11
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
@@ -21,24 +23,42 @@ jobs:
       - name: 馃摝 Install dependencies
         run: pip install -r requirements.txt
 
-      - name: 馃攳 Run Keyword Research First
+      - name: 馃實 Run Industry Scanner
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          DEVTO_API_KEY:  ${{ secrets.DEVTO_API_KEY }}
+        run: python industry_scanner.py
+
+      - name: 馃敟 Run Viral Detector
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          DEVTO_API_KEY:  ${{ secrets.DEVTO_API_KEY }}
+        run: python viral_detector.py
+
+      - name: 馃攷 Run SEO Optimizer
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          DEVTO_API_KEY:  ${{ secrets.DEVTO_API_KEY }}
+        run: python seo_optimizer.py
+
+      - name: 馃攳 Run Keyword Research
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           DEVTO_API_KEY:  ${{ secrets.DEVTO_API_KEY }}
         run: python keyword_researcher.py
 
-      - name: 馃殌 Run AutoBlog Pipeline
+      - name: 馃殌 Run AutoBlog
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           DEVTO_API_KEY:  ${{ secrets.DEVTO_API_KEY }}
         run: python main.py
 
-      - name: 馃捑 Save files back to repo
+      - name: 馃捑 Save files
         run: |
           git config --global user.name "AutoBlog Bot"
           git config --global user.email "autoblog@bot.com"
           git add memory.json brain.json || true
-          git diff --staged --quiet || git commit -m "馃摑 New post + keywords $(date +'%Y-%m-%d')"
+          git diff --staged --quiet || git commit -m "馃摑 Post + brain update $(date +'%Y-%m-%d')"
           git push || true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
